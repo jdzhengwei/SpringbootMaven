@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="false" scanPeriod="30 seconds">
+	
+    <contextName>demoM</contextName>
+
+    <property name="logsPath" value="logs/demoM"/>
+
+    <timestamp key="currentMonth" datePattern="yyyyMM"/>
+    
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+            <![CDATA[
+        	%d{yyyy-MM-dd HH:mm:ss.SSS,+08:00} [%t] %p %logger ${CONTEXT_NAME} - %m%n
+        	]]>
+<!--         ${HOSTNAME} %d{yyyy-MM-dd HH:mm:ss.SSS,+08:00} [%t] ${SPRING_PROFILES_ACTIVE} %p %logger [%mdc{X_TRACE_ID},%mdc{TRACE_ID},%mdc{REMOTE_ADDR},%mdc{REQUEST_URI},%mdc{SUBJECT_ID}] ${CONTEXT_NAME} - %m%n -->
+            </pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${logsPath}/${currentMonth}/${HOSTNAME}.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                <![CDATA[
+        %d{yyyy-MM-dd HH:mm:ss.SSS,+08:00} [%t] ${SPRING_PROFILES_ACTIVE} %p %logger [%mdc{X_TRACE_ID},%mdc{TRACE_ID},%mdc{REMOTE_ADDR},%mdc{REQUEST_URI},%mdc{SUBJECT_ID}] ${CONTEXT_NAME} - %m%n
+        ]]>
+            </pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev">
+        <logger name="com.example.demoM" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="staging">
+        <logger name="com.example.demoM" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
+
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+    <springProfile name="demo">
+        <logger name="com.example.demoM" additivity="false" level="ERROR">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
+
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <logger name="com.example.demoM" additivity="false" level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE" />
+        </logger>
+
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+    <springProfile name="default">
+        <logger name="com.example.demoM" additivity="false" level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </logger>
+		
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+</configuration>
